@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Taylo — Il social per chi ama gli animali</title>
+<meta name="description" content="Taylo è il social italiano pensato per te e i tuoi animali: condividi la loro vita, trova un professionista, adotta. E ogni animale ha la sua scheda." />
+
+<!-- Open Graph / anteprima link (Instagram, WhatsApp, ecc.) -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Taylo — Il social per chi ama gli animali" />
+<meta property="og:description" content="Condividi la vita dei tuoi animali, trova un professionista, adotta. Ogni animale ha la sua scheda. Scarica Taylo, è gratis." />
+<meta property="og:url" content="https://taylo.it" />
+<meta property="og:image" content="https://taylo.it/logo.png" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" type="image/png" href="logo.png" />
+<link rel="apple-touch-icon" href="logo.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+
+<style>
+  /* ===== Palette "Prato" — identica all'app (constants/theme.ts) ===== */
+  :root {
+    --bg: #F5F1EB;
+    --surface: #FFFFFF;
+    --surface2: #F0EBE2;
+    --surface-offset: #E8E2D8;
+    --border: rgba(28, 22, 12, 0.09);
+    --text: #18140F;
+    --text-muted: #6A5E4D;
+    --text-faint: #A89880;
+    --text-inverse: #FFFFFF;
+    --primary: #2A5724;
+    --primary-hover: #1E4019;
+    --primary-light: #C4DCC0;
+    --secondary: #B85C28;
+    --secondary-light: #EDD4C0;
+    --accent: #E8A030;
+    --shadow-sm: 0 2px 10px rgba(24, 20, 15, 0.07);
+    --shadow-md: 0 10px 34px rgba(24, 20, 15, 0.12);
+    --shadow-lg: 0 26px 70px rgba(24, 20, 15, 0.16);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0D0F0C;
+      --surface: #151714;
+      --surface2: #191C18;
+      --surface-offset: #1E211C;
+      --border: rgba(200, 220, 180, 0.10);
+      --text: #E4EBE0;
+      --text-muted: #93A38C;
+      --text-faint: #5C6656;
+      --text-inverse: #0D0F0C;
+      --primary: #50AC49;
+      --primary-hover: #3F9038;
+      --primary-light: #142212;
+      --secondary: #CE6E3A;
+      --secondary-light: #241408;
+      --accent: #F0B440;
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 10px 34px rgba(0, 0, 0, 0.55);
+      --shadow-lg: 0 26px 70px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; line-height: 1.1; letter-spacing: -0.01em; }
+
+  a { color: inherit; text-decoration: none; }
+
+  img { max-width: 100%; height: auto; }
+
+  .wrap { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* ===== Decorazione: zampette di sfondo ===== */
+  .paw-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    opacity: 0.5;
+    background-image:
+      radial-gradient(circle at 12% 22%, var(--primary-light) 0, transparent 38%),
+      radial-gradient(circle at 88% 12%, var(--secondary-light) 0, transparent 34%),
+      radial-gradient(circle at 78% 82%, var(--primary-light) 0, transparent 40%);
+    filter: blur(4px);
+  }
+
+  /* ===== NAV ===== */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: saturate(150%) blur(14px);
+    -webkit-backdrop-filter: saturate(150%) blur(14px);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  nav { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .brand { display: flex; align-items: center; gap: 11px; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 22px; }
+  .brand img { width: 34px; height: 34px; border-radius: 10px; box-shadow: var(--shadow-sm); }
+  .nav-links { display: flex; align-items: center; gap: 30px; }
+  .nav-links a.link { color: var(--text-muted); font-weight: 500; font-size: 15px; transition: color .2s; }
+  .nav-links a.link:hover { color: var(--text); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 15px;
+    border-radius: 9999px; padding: 12px 22px; cursor: pointer; border: none;
+    transition: transform .18s ease, box-shadow .2s ease, background .2s;
+  }
+  .btn-primary { background: var(--primary); color: #fff; box-shadow: var(--shadow-sm); }
+  .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  @media (max-width: 719px) {
+    .nav-links a.link { display: none; }
+    .nav-cta { padding: 10px 18px; font-size: 14px; }
+  }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; z-index: 1; padding: 72px 0 40px; }
+  .hero-grid { display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
+  @media (min-width: 940px) { .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 40px; padding: 40px 0; } }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--primary); font-weight: 600; font-size: 13.5px;
+    padding: 7px 15px; border-radius: 9999px; box-shadow: var(--shadow-sm);
+    margin-bottom: 22px;
+  }
+  .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); }
+
+  .hero h1 { font-size: clamp(40px, 6.4vw, 66px); font-weight: 800; margin-bottom: 20px; }
+  .hero h1 .accent { color: var(--primary); font-style: italic; }
+  .hero p.lead { font-size: clamp(17px, 2.2vw, 20px); color: var(--text-muted); max-width: 520px; margin-bottom: 32px; }
+
+  .store-badges { display: flex; flex-wrap: wrap; gap: 14px; }
+  .store-btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: var(--text); color: var(--bg);
+    padding: 12px 20px; border-radius: 16px; box-shadow: var(--shadow-sm);
+    transition: transform .18s ease, box-shadow .2s ease;
+  }
+  .store-btn:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .store-btn svg { width: 26px; height: 26px; flex-shrink: 0; }
+  .store-btn .st { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
+  .store-btn .st small { font-size: 11px; opacity: 0.75; font-weight: 500; }
+  .store-btn .st strong { font-size: 17px; font-weight: 700; font-family: 'DM Sans', sans-serif; }
+
+  /* ===== Mockup telefono / scheda animale ===== */
+  .hero-visual { position: relative; display: flex; justify-content: center; }
+  .phone {
+    position: relative; width: 300px; max-width: 82vw;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 40px; padding: 16px; box-shadow: var(--shadow-lg);
+    transform: rotate(-3deg);
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100% { transform: rotate(-3deg) translateY(0); } 50% { transform: rotate(-3deg) translateY(-14px); } }
+  .phone-notch { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); width: 110px; height: 22px; background: var(--surface-offset); border-radius: 0 0 14px 14px; z-index: 3; }
+  .screen { background: var(--bg); border-radius: 28px; overflow: hidden; padding: 34px 18px 22px; }
+
+  .pet-card { background: var(--surface); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+  .pet-top { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .pet-avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(140deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: var(--shadow-sm); }
+  .pet-avatar svg { width: 34px; height: 34px; }
+  .pet-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 21px; }
+  .pet-sub { color: var(--text-muted); font-size: 13px; }
+  .pet-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .chip { background: var(--primary-light); color: var(--primary); font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 9999px; }
+  @media (prefers-color-scheme: dark) { .chip { color: var(--primary); } }
+  .pet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .pet-grid div { aspect-ratio: 1; border-radius: 10px; }
+  .pg1 { background: linear-gradient(135deg, var(--secondary-light), var(--secondary)); }
+  .pg2 { background: linear-gradient(135deg, var(--primary-light), var(--primary)); }
+  .pg3 { background: linear-gradient(135deg, var(--accent), var(--secondary)); }
+  .pg4 { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); }
+  .pg5 { background: linear-gradient(135deg, var(--accent), var(--primary-light)); }
+  .pg6 { background: linear-gradient(135deg, var(--secondary), var(--accent)); }
+  .pet-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-faint); margin-top: 14px; }
+
+  /* Badge fluttuante */
+  .float-badge {
+    position: absolute; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 12px 16px; box-shadow: var(--shadow-md);
+    display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px;
+    animation: floatB 5s ease-in-out infinite;
+  }
+  .float-badge svg { width: 22px; height: 22px; }
+  .fb-1 { top: 30px; right: -6px; animation-delay: .4s; }
+  .fb-2 { bottom: 54px; left: -18px; animation-delay: 1.2s; }
+  @keyframes floatB { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  @media (max-width: 520px) { .float-badge { display: none; } }
+
+  /* ===== SEZIONI ===== */
+  section { position: relative; z-index: 1; }
+  .section-head { text-align: center; max-width: 640px; margin: 0 auto 52px; }
+  .section-head .kicker { color: var(--secondary); font-weight: 700; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 12px; }
+  .section-head h2 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 700; margin-bottom: 16px; }
+  .section-head p { color: var(--text-muted); font-size: 18px; }
+
+  .features { padding: 80px 0; }
+  .feat-grid { display: grid; grid-template-columns: 1fr; gap: 22px; }
+  @media (min-width: 720px) { .feat-grid { grid-template-columns: repeat(3, 1fr); } }
+  .feat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 24px; padding: 32px 28px; box-shadow: var(--shadow-sm);
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .feat-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+  .feat-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+  .feat-icon svg { width: 30px; height: 30px; }
+  .fi-green { background: var(--primary-light); color: var(--primary); }
+  .fi-terra { background: var(--secondary-light); color: var(--secondary); }
+  .fi-amber { background: color-mix(in srgb, var(--accent) 25%, transparent); color: var(--accent); }
+  .feat-card h3 { font-size: 23px; font-weight: 700; margin-bottom: 10px; }
+  .feat-card p { color: var(--text-muted); font-size: 15.5px; }
+
+  /* ===== HIGHLIGHT scheda animale ===== */
+  .highlight { padding: 40px 0 90px; }
+  .highlight-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 32px; box-shadow: var(--shadow-md); overflow: hidden;
+    display: grid; grid-template-columns: 1fr; align-items: stretch;
+  }
+  @media (min-width: 900px) { .highlight-box { grid-template-columns: 1.1fr 0.9fr; } }
+  .highlight-text { padding: 48px 40px; }
+  .highlight-text .kicker { display: inline-flex; align-items: center; gap: 8px; color: var(--accent); font-weight: 700; font-size: 14px; letter-spacing: 0.03em; text-transform: uppercase; margin-bottom: 16px; }
+  .highlight-text h2 { font-size: clamp(30px, 4vw, 44px); font-weight: 700; margin-bottom: 18px; }
+  .highlight-text p { color: var(--text-muted); font-size: 17.5px; margin-bottom: 16px; }
+  .highlight-list { list-style: none; margin-top: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .highlight-list li { display: flex; align-items: flex-start; gap: 12px; font-weight: 500; }
+  .highlight-list .tick { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .highlight-list .tick svg { width: 14px; height: 14px; }
+  .highlight-visual { background: linear-gradient(160deg, var(--surface2), var(--surface-offset)); display: flex; align-items: center; justify-content: center; padding: 44px 30px; }
+
+  /* ===== CTA FINALE ===== */
+  .cta { padding: 30px 0 100px; }
+  .cta-box {
+    background: var(--primary); color: #fff; border-radius: 32px;
+    padding: 64px 40px; text-align: center; box-shadow: var(--shadow-lg);
+    position: relative; overflow: hidden;
+  }
+  .cta-box::before, .cta-box::after {
+    content: ''; position: absolute; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .cta-box::before { width: 260px; height: 260px; top: -90px; right: -60px; }
+  .cta-box::after { width: 200px; height: 200px; bottom: -80px; left: -40px; }
+  .cta-box h2 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 700; margin-bottom: 16px; position: relative; }
+  .cta-box p { font-size: 18px; opacity: 0.9; max-width: 500px; margin: 0 auto 32px; position: relative; }
+  .cta-box .store-badges { justify-content: center; position: relative; }
+  .cta-box .store-btn { background: #fff; color: var(--primary); }
+
+  /* ===== FOOTER ===== */
+  footer { border-top: 1px solid var(--border); padding: 44px 0; position: relative; z-index: 1; }
+  .foot { display: flex; flex-direction: column; gap: 20px; align-items: center; text-align: center; }
+  @media (min-width: 720px) { .foot { flex-direction: row; justify-content: space-between; text-align: left; } }
+  .foot .brand { font-size: 20px; }
+  .foot-links { display: flex; gap: 24px; align-items: center; }
+  .foot-links a { color: var(--text-muted); font-size: 14.5px; font-weight: 500; transition: color .2s; }
+  .foot-links a:hover { color: var(--text); }
+  .foot-copy { color: var(--text-faint); font-size: 13.5px; }
+
+  /* ===== Rifiniture schermi piccoli ===== */
+  @media (max-width: 600px) {
+    .wrap { padding: 0 18px; }
+    .hero { padding: 48px 0 24px; }
+    .features { padding: 56px 0; }
+    .feat-card { padding: 28px 24px; }
+    .highlight-text { padding: 36px 26px; }
+    .highlight-visual { padding: 32px 22px; }
+    .cta-box { padding: 48px 26px; }
+    .section-head { margin-bottom: 40px; }
+    .store-btn { flex: 1 1 auto; justify-content: center; }
+  }
+
+  /* ===== Reveal on scroll ===== */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .phone, .float-badge { animation: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="paw-bg"></div>
+
+<!-- ============ NAV ============ -->
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#top">
+        <img src="logo.png" alt="Logo Taylo" />
+        Taylo
+      </a>
+      <div class="nav-links">
+        <a class="link" href="#funzioni">Funzioni</a>
+        <a class="link" href="#scheda">Scheda animale</a>
+        <a class="btn btn-primary nav-cta" href="#scarica">Scarica gratis</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow reveal"><span class="dot"></span> La community italiana di chi ama gli animali</span>
+        <h1 class="reveal">Il posto dei tuoi <span class="accent">animali</span>.</h1>
+        <p class="lead reveal">Taylo è il social pensato per te e i tuoi compagni a quattro zampe. Condividi la loro vita, trova il professionista giusto, dai o trova una nuova casa. E ogni animale ha la sua scheda.</p>
+        <div class="store-badges reveal">
+          <a class="store-btn" href="https://apps.apple.com/app/id6795193969" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.03-2.7 2.2-3.99 2.3-4.06-1.25-1.83-3.2-2.08-3.9-2.11-1.66-.17-3.24.97-4.08.97-.84 0-2.14-.95-3.52-.92-1.81.03-3.48 1.05-4.41 2.67-1.88 3.26-.48 8.08 1.35 10.73.89 1.3 1.96 2.75 3.36 2.7 1.35-.05 1.86-.87 3.49-.87 1.63 0 2.09.87 3.52.84 1.45-.03 2.37-1.32 3.26-2.62 1.03-1.5 1.45-2.96 1.47-3.03-.03-.02-2.82-1.08-2.85-4.27M14.4 4.15c.74-.9 1.24-2.15 1.1-3.4-1.07.04-2.36.71-3.12 1.61-.68.79-1.28 2.06-1.12 3.28 1.19.09 2.4-.6 3.14-1.49"/></svg>
+            <span class="st"><small>Scarica su</small><strong>App Store</strong></span>
+          </a>
+          <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.lsw1894.taylo" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path fill="#00D8A1" d="M3.6 2.3c-.24.25-.38.64-.38 1.14v17.12c0 .5.14.89.39 1.13l.06.05L13.2 12.1v-.2L3.66 2.25z"/><path fill="#00A0FF" d="M16.4 15.3l-3.2-3.2v-.2l3.2-3.2.07.04 3.79 2.16c1.08.61 1.08 1.62 0 2.24l-3.79 2.15z"/><path fill="#FF3A44" d="M16.47 15.26L13.2 12 3.6 21.7c.36.38.94.42 1.6.05l11.27-6.49"/><path fill="#FFC500" d="M16.47 8.74L5.2 2.25c-.66-.38-1.24-.33-1.6.05L13.2 12z"/></svg>
+            <span class="st"><small>Disponibile su</small><strong>Google Play</strong></span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Visual: mockup scheda animale -->
+      <div class="hero-visual reveal">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="screen">
+            <div class="pet-card">
+              <div class="pet-top">
+                <div class="pet-avatar">
+                  <svg viewBox="0 0 24 24" fill="#fff"><path d="M4.5 12.5a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6m4-4.5a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8m7 0a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8m4.5 4.5a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6M12 13c-2.6 0-5 2.3-5 4.6 0 1.5 1.1 2.4 2.6 2.4.9 0 1.6-.5 2.4-.5s1.5.5 2.4.5c1.5 0 2.6-.9 2.6-2.4 0-2.3-2.4-4.6-5-4.6"/></svg>
+                </div>
+                <div>
+                  <div class="pet-name">Milo</div>
+                  <div class="pet-sub">Il tuo Golden Retriever</div>
+                </div>
+              </div>
+              <div class="pet-chips">
+                <span class="chip">Cane</span>
+                <span class="chip">Golden Retriever</span>
+                <span class="chip">3 anni</span>
+              </div>
+              <div class="pet-grid">
+                <div class="pg1"></div><div class="pg2"></div><div class="pg3"></div>
+                <div class="pg4"></div><div class="pg5"></div><div class="pg6"></div>
+              </div>
+              <span class="pet-tag">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/><path d="m9 11 3 3L22 4"/></svg>
+                Tutte le foto in cui è taggato
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="float-badge fb-1">
+          <svg viewBox="0 0 24 24" fill="var(--secondary)"><path d="M4.5 12.5a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6m4-4.5a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8m7 0a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8m4.5 4.5a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6M12 13c-2.6 0-5 2.3-5 4.6 0 1.5 1.1 2.4 2.6 2.4.9 0 1.6-.5 2.4-.5s1.5.5 2.4.5c1.5 0 2.6-.9 2.6-2.4 0-2.3-2.4-4.6-5-4.6"/></svg>
+          Segui e lascia una zampa
+        </div>
+        <div class="float-badge fb-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/></svg>
+          Adotta con cuore
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FUNZIONI ============ -->
+<section class="features" id="funzioni">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker">Tutto in un'app</div>
+      <h2>Una community, tante possibilità</h2>
+      <p>Dal feed dei tuoi amici a quattro zampe al veterinario dietro l'angolo: Taylo mette insieme tutto ciò che serve a chi ama gli animali.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card reveal">
+        <div class="feat-icon fi-green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-4-1L3 20l1.1-5A8.4 8.4 0 1 1 21 11.5z"/></svg>
+        </div>
+        <h3>Social</h3>
+        <p>Condividi le foto dei tuoi animali, segui altri profili, metti like, commenta e scambia messaggi. Un feed pieno di code scodinzolanti.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon fi-terra">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
+        </div>
+        <h3>Adozioni</h3>
+        <p>Sfoglia gli animali in cerca di una famiglia, filtra per zona e invia la tua richiesta. Rifugi ed enti verificati hanno un badge speciale.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon fi-amber">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        </div>
+        <h3>Professionisti</h3>
+        <p>Veterinari, educatori, pensioni e toelettatori. Cerca vicino a te, in una città o in tutta una regione, ordinati per valutazione.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HIGHLIGHT: SCHEDA ANIMALE ============ -->
+<section class="highlight" id="scheda">
+  <div class="wrap">
+    <div class="highlight-box reveal">
+      <div class="highlight-text">
+        <div class="kicker">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4.5 12.5a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6m4-4.5a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8m7 0a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8m4.5 4.5a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6M12 13c-2.6 0-5 2.3-5 4.6 0 1.5 1.1 2.4 2.6 2.4.9 0 1.6-.5 2.4-.5s1.5.5 2.4.5c1.5 0 2.6-.9 2.6-2.4 0-2.3-2.4-4.6-5-4.6"/></svg>
+          Il cuore di Taylo
+        </div>
+        <h2>Ogni animale ha la sua scheda</h2>
+        <p>Nome, foto, età, specie e razza: crea il profilo di ognuno dei tuoi animali. Non è solo un'anagrafe — è il suo spazio nella community.</p>
+        <p>E la magia: Taylo raccoglie in automatico <strong>tutte le foto in cui quell'animale è taggato</strong>, come un piccolo album che racconta la sua vita, giorno dopo giorno.</p>
+        <ul class="highlight-list">
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span> Un profilo dedicato per ogni tuo animale</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span> Album automatico dei post in cui è taggato</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span> Specie, razza ed età sempre a portata di mano</li>
+        </ul>
+      </div>
+      <div class="highlight-visual">
+        <div class="pet-card" style="max-width: 300px; width: 100%;">
+          <div class="pet-top">
+            <div class="pet-avatar" style="background: linear-gradient(140deg, var(--secondary), var(--accent));">
+              <svg viewBox="0 0 24 24" fill="#fff"><path d="M4.5 12.5a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6m4-4.5a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8m7 0a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8m4.5 4.5a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6M12 13c-2.6 0-5 2.3-5 4.6 0 1.5 1.1 2.4 2.6 2.4.9 0 1.6-.5 2.4-.5s1.5.5 2.4.5c1.5 0 2.6-.9 2.6-2.4 0-2.3-2.4-4.6-5-4.6"/></svg>
+            </div>
+            <div>
+              <div class="pet-name">Luna</div>
+              <div class="pet-sub">La tua gattina</div>
+            </div>
+          </div>
+          <div class="pet-chips">
+            <span class="chip">Gatto</span>
+            <span class="chip">Europeo</span>
+            <span class="chip">2 anni</span>
+          </div>
+          <div class="pet-grid">
+            <div class="pg6"></div><div class="pg4"></div><div class="pg1"></div>
+            <div class="pg5"></div><div class="pg3"></div><div class="pg2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta" id="scarica">
+  <div class="wrap">
+    <div class="cta-box reveal">
+      <h2>Entra nella community di Taylo</h2>
+      <p>Scarica gratis, crea il profilo dei tuoi animali e unisciti a chi, come te, li mette al primo posto.</p>
+      <div class="store-badges">
+        <a class="store-btn" href="https://apps.apple.com/app/id6795193969" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.03-2.7 2.2-3.99 2.3-4.06-1.25-1.83-3.2-2.08-3.9-2.11-1.66-.17-3.24.97-4.08.97-.84 0-2.14-.95-3.52-.92-1.81.03-3.48 1.05-4.41 2.67-1.88 3.26-.48 8.08 1.35 10.73.89 1.3 1.96 2.75 3.36 2.7 1.35-.05 1.86-.87 3.49-.87 1.63 0 2.09.87 3.52.84 1.45-.03 2.37-1.32 3.26-2.62 1.03-1.5 1.45-2.96 1.47-3.03-.03-.02-2.82-1.08-2.85-4.27M14.4 4.15c.74-.9 1.24-2.15 1.1-3.4-1.07.04-2.36.71-3.12 1.61-.68.79-1.28 2.06-1.12 3.28 1.19.09 2.4-.6 3.14-1.49"/></svg>
+          <span class="st"><small>Scarica su</small><strong>App Store</strong></span>
+        </a>
+        <a class="store-btn" href="https://play.google.com/store/apps/details?id=com.lsw1894.taylo" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path fill="#00D8A1" d="M3.6 2.3c-.24.25-.38.64-.38 1.14v17.12c0 .5.14.89.39 1.13l.06.05L13.2 12.1v-.2L3.66 2.25z"/><path fill="#00A0FF" d="M16.4 15.3l-3.2-3.2v-.2l3.2-3.2.07.04 3.79 2.16c1.08.61 1.08 1.62 0 2.24l-3.79 2.15z"/><path fill="#FF3A44" d="M16.47 15.26L13.2 12 3.6 21.7c.36.38.94.42 1.6.05l11.27-6.49"/><path fill="#FFC500" d="M16.47 8.74L5.2 2.25c-.66-.38-1.24-.33-1.6.05L13.2 12z"/></svg>
+          <span class="st"><small>Disponibile su</small><strong>Google Play</strong></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <a class="brand" href="#top">
+        <img src="logo.png" alt="Logo Taylo" style="width:30px;height:30px;border-radius:9px;" />
+        Taylo
+      </a>
+      <div class="foot-links">
+        <a href="#funzioni">Funzioni</a>
+        <a href="#scheda">Scheda animale</a>
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+      <div class="foot-copy">© 2026 Taylo · taylo.it</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Reveal-on-scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = (i % 3) * 90 + 'ms';
+    io.observe(el);
+  });
+</script>
+
+</body>
+</html>
